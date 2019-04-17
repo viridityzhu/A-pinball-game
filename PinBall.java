@@ -30,6 +30,10 @@ public class PinBall
 	private int ballY = RACKET_Y-BALL_SIZE*2;
 	// racketX代表球拍的水平位置
 	private int racketX = ballX+BALL_SIZE/2-RACKET_WIDTH/2;
+	// 玩家的生命值
+	private int lives=3;
+	// 生命值显示的字体（之后可以用红心图片代替）
+	Font LifeFont= new Font("TimesRoman",Font.BOLD,30);
 	private MyCanvas tableArea = new MyCanvas();
 	Timer timer;
 	// 游戏是否结束的旗标
@@ -53,17 +57,20 @@ public class PinBall
 		{
 			public void keyPressed(KeyEvent ke)
 			{
-				// 按下向左、向右键时，球拍水平坐标分别减少、增加
-				if (ke.getKeyCode() == KeyEvent.VK_LEFT)
-				{
-					if (racketX > 0)
-					racketX -= 3*Math.abs(xSpeed);
+				if(isStart) {
+					// 按下向左、向右键时，球拍水平坐标分别减少、增加
+					if (ke.getKeyCode() == KeyEvent.VK_LEFT)
+					{
+						if (racketX > 0)
+						racketX -= 50;
+					}
+					if (ke.getKeyCode() == KeyEvent.VK_RIGHT)
+					{
+						if (racketX < TABLE_WIDTH - RACKET_WIDTH)
+						racketX += 50;
+					}
 				}
-				if (ke.getKeyCode() == KeyEvent.VK_RIGHT)
-				{
-					if (racketX < TABLE_WIDTH - RACKET_WIDTH)
-					racketX += 3*Math.abs(xSpeed);
-				}
+
 			}
 		};
 		// 为窗口和tableArea对象分别添加键盘监听器
@@ -77,14 +84,27 @@ public class PinBall
 			{
 				xSpeed = -xSpeed;
 			}
-			// 如果小球高度超出了球拍位置，且横向不在球拍范围之内，游戏结束。
+			// 如果小球高度超出了球拍位置，且横向不在球拍范围之内，生命值-1。
 			if (ballY >= RACKET_Y - BALL_SIZE &&
 				(ballX < racketX-BALL_SIZE || ballX > racketX + RACKET_WIDTH+BALL_SIZE))
 			{
-				timer.stop();
-				// 设置游戏是否结束的旗标为true。
-				isLose = true;
-				tableArea.repaint();
+				// 玩家生命值-1
+				lives--;
+				// 如果生命值降为0，游戏结束
+				if(lives==0) {
+					timer.stop();
+					// 设置游戏是否结束的旗标为true。
+					isLose = true;
+					tableArea.repaint();
+				}
+				else {
+					// ballX和ballY代表小球的坐标
+					ballX = 100;
+					ballY = RACKET_Y-BALL_SIZE*2;
+					// racketX代表球拍的水平位置
+					racketX = ballX+BALL_SIZE/2-RACKET_WIDTH/2;
+					isStart=false;
+				}
 			}
 			// 如果小球位于球拍之内，且到达球拍位置，小球反弹
 			else if (ballY  <= 0 ||
@@ -104,7 +124,7 @@ public class PinBall
 		timer = new Timer(50, taskPerformer);
 		timer.start();
 		
-		// 添加鼠标事件监听器
+		// 添加鼠标事件监听器，按下左键，游戏开始
 		tableArea.addMouseListener(new MouseAdapter (){
 			public void mousePressed(MouseEvent e) {
 				if(!isStart) {
@@ -112,7 +132,7 @@ public class PinBall
 				}
 			}
 		});
-		// 添加鼠标移动事件监听器
+		// 添加鼠标移动事件监听器，使杆与小球的位置跟随鼠标
 		tableArea.addMouseMotionListener(new MouseMotionAdapter() {
 			public void mouseMoved(MouseEvent e) {
 				if(!isStart) {
@@ -150,6 +170,10 @@ public class PinBall
 				g.setColor(new Color(80, 80, 200));
 				g.fillRect(racketX , RACKET_Y
 					, RACKET_WIDTH , RACKET_HEIGHT);
+				// 设置颜色，并绘制生命值
+				g.setColor(Color.red);
+				g.setFont(LifeFont);
+				g.drawString("Life:"+lives, 20,30);
 			}
 		}
 	}
