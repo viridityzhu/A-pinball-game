@@ -1,4 +1,3 @@
-package Games5;
 import java.util.Random;
 import java.awt.*;
 import javax.swing.*;
@@ -6,56 +5,56 @@ import java.awt.event.*;
 
 public class PinBall
 {
-	// ×ÀÃæµÄ¿í¶È
+	// æ¡Œé¢çš„å®½åº¦
 	private final int TABLE_WIDTH = 1000;
-	// ×ÀÃæµÄ¸ß¶È
+	// æ¡Œé¢çš„é«˜åº¦
 	private final int TABLE_HEIGHT = 800;
-	// ÇòÅÄµÄ´¹Ö±Î»ÖÃ
+	// çƒæ‹çš„å‚ç›´ä½ç½®
 	private final int RACKET_Y = TABLE_HEIGHT-50;
-	// ÏÂÃæ¶¨ÒåÇòÅÄµÄ¸ß¶ÈºÍ¿í¶È
+	// ä¸‹é¢å®šä¹‰çƒæ‹çš„é«˜åº¦å’Œå®½åº¦
 	private final int RACKET_HEIGHT = 30;
 	private final int RACKET_WIDTH = 200;
-	// Ğ¡ÇòµÄ´óĞ¡
+	// å°çƒçš„å¤§å°
 	private final int BALL_SIZE = 24;
-	private Frame f = new Frame("µ¯ÇòÓÎÏ·");
+	private Frame f = new Frame("å¼¹çƒæ¸¸æˆ");
 	Random rand = new Random();
-	// Ğ¡Çò×İÏòµÄÔËĞĞËÙ¶È
+	// å°çƒçºµå‘çš„è¿è¡Œé€Ÿåº¦
 	private int ySpeed = -20;
-	// ·µ»ØÒ»¸ö-0.5~0.5µÄ±ÈÂÊ£¬ÓÃÓÚ¿ØÖÆĞ¡ÇòµÄÔËĞĞ·½Ïò¡£
+	// è¿”å›ä¸€ä¸ª-0.5~0.5çš„æ¯”ç‡ï¼Œç”¨äºæ§åˆ¶å°çƒçš„è¿è¡Œæ–¹å‘ã€‚
 	private double xyRate = rand.nextDouble() - 0.5;
-	// Ğ¡ÇòºáÏòµÄÔËĞĞËÙ¶È
+	// å°çƒæ¨ªå‘çš„è¿è¡Œé€Ÿåº¦
 	public int xSpeed = (int)(ySpeed * xyRate * 2);
-	// ballXºÍballY´ú±íĞ¡ÇòµÄ×ø±ê
+	// ballXå’ŒballYä»£è¡¨å°çƒçš„åæ ‡
 	private int ballX = 100;
 	private int ballY = RACKET_Y-BALL_SIZE*2;
-	// racketX´ú±íÇòÅÄµÄË®Æ½Î»ÖÃ
+	// racketXä»£è¡¨çƒæ‹çš„æ°´å¹³ä½ç½®
 	private int racketX = ballX+BALL_SIZE/2-RACKET_WIDTH/2;
-	// Íæ¼ÒµÄÉúÃüÖµ
+	// ç©å®¶çš„ç”Ÿå‘½å€¼
 	private int lives=3;
-	// ÉúÃüÖµÏÔÊ¾µÄ×ÖÌå£¨Ö®ºó¿ÉÒÔÓÃºìĞÄÍ¼Æ¬´úÌæ£©
+	// ç”Ÿå‘½å€¼æ˜¾ç¤ºçš„å­—ä½“ï¼ˆä¹‹åå¯ä»¥ç”¨çº¢å¿ƒå›¾ç‰‡ä»£æ›¿ï¼‰
 	Font LifeFont= new Font("TimesRoman",Font.BOLD,30);
 	private MyCanvas tableArea = new MyCanvas();
 	Timer timer;
-	// ÓÎÏ·ÊÇ·ñ½áÊøµÄÆì±ê
+	// æ¸¸æˆæ˜¯å¦ç»“æŸçš„æ——æ ‡
 	private boolean isLose = false;
-	// ÓÎÏ·ÊÇ·ñ¿ªÊ¼µÄÆì±ê
+	// æ¸¸æˆæ˜¯å¦å¼€å§‹çš„æ——æ ‡
 	private boolean isStart = false;
 	public void init(){
-		//°´ÏÂ¹Ø±Õ°´Å¥£¬ÍË³ö³ÌĞò
+		//æŒ‰ä¸‹å…³é—­æŒ‰é’®ï¼Œé€€å‡ºç¨‹åº
 		f.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				System.exit(0);
 			}
 		});
-		// ÉèÖÃ×ÀÃæÇøÓòµÄ×î¼Ñ´óĞ¡
+		// è®¾ç½®æ¡Œé¢åŒºåŸŸçš„æœ€ä½³å¤§å°
 		tableArea.setPreferredSize(
 			new Dimension(TABLE_WIDTH , TABLE_HEIGHT));
 		f.add(tableArea);
-		// ¶¨Òå¼üÅÌ¼àÌıÆ÷
+		// å®šä¹‰é”®ç›˜ç›‘å¬å™¨
 		KeyAdapter keyProcessor = new KeyAdapter(){
 			public void keyPressed(KeyEvent ke){
 				if(isStart) {
-					// °´ÏÂÏò×ó¡¢ÏòÓÒ¼üÊ±£¬ÇòÅÄË®Æ½×ø±ê·Ö±ğ¼õÉÙ¡¢Ôö¼Ó
+					// æŒ‰ä¸‹å‘å·¦ã€å‘å³é”®æ—¶ï¼Œçƒæ‹æ°´å¹³åæ ‡åˆ†åˆ«å‡å°‘ã€å¢åŠ 
 					if (ke.getKeyCode() == KeyEvent.VK_LEFT){
 						if (racketX > 0)
 						racketX -= 50;
@@ -68,47 +67,47 @@ public class PinBall
 
 			}
 		};
-		// Îª´°¿ÚºÍtableArea¶ÔÏó·Ö±ğÌí¼Ó¼üÅÌ¼àÌıÆ÷
+		// ä¸ºçª—å£å’ŒtableAreaå¯¹è±¡åˆ†åˆ«æ·»åŠ é”®ç›˜ç›‘å¬å™¨
 		f.addKeyListener(keyProcessor);
 		tableArea.addKeyListener(keyProcessor);
-		// ¶¨ÒåÃ¿0.1ÃëÖ´ĞĞÒ»´ÎµÄÊÂ¼ş¼àÌıÆ÷¡£
+		// å®šä¹‰æ¯0.1ç§’æ‰§è¡Œä¸€æ¬¡çš„äº‹ä»¶ç›‘å¬å™¨ã€‚
 		ActionListener taskPerformer = evt ->{
-			// Èç¹ûĞ¡ÇòÅöµ½×óÓÒ±ß¿ò
+			// å¦‚æœå°çƒç¢°åˆ°å·¦å³è¾¹æ¡†
 			if (ballX  <= 0 || ballX >= TABLE_WIDTH - BALL_SIZE){
 				xSpeed = -xSpeed;
 			}
-			// Èç¹ûĞ¡Çò¸ß¶È³¬³öÁËÇòÅÄÎ»ÖÃ£¬ÇÒºáÏò²»ÔÚÇòÅÄ·¶Î§Ö®ÄÚ£¬ÉúÃüÖµ-1¡£
+			// å¦‚æœå°çƒé«˜åº¦è¶…å‡ºäº†çƒæ‹ä½ç½®ï¼Œä¸”æ¨ªå‘ä¸åœ¨çƒæ‹èŒƒå›´ä¹‹å†…ï¼Œç”Ÿå‘½å€¼-1ã€‚
 			if (ballY >= RACKET_Y - BALL_SIZE &&
 				(ballX < racketX-BALL_SIZE || ballX > racketX + RACKET_WIDTH+BALL_SIZE)){
-				// Íæ¼ÒÉúÃüÖµ-1
+				// ç©å®¶ç”Ÿå‘½å€¼-1
 				lives--;
-				// Èç¹ûÉúÃüÖµ½µÎª0£¬ÓÎÏ·½áÊø
+				// å¦‚æœç”Ÿå‘½å€¼é™ä¸º0ï¼Œæ¸¸æˆç»“æŸ
 				if(lives==0) {
 					timer.stop();
-					// ÉèÖÃÓÎÏ·ÊÇ·ñ½áÊøµÄÆì±êÎªtrue¡£
+					// è®¾ç½®æ¸¸æˆæ˜¯å¦ç»“æŸçš„æ——æ ‡ä¸ºtrueã€‚
 					isLose = true;
 					tableArea.repaint();
 				}
 				else {
-					// ballXºÍballY´ú±íĞ¡ÇòµÄ×ø±ê
+					// ballXå’ŒballYä»£è¡¨å°çƒçš„åæ ‡
 					ballX = 100;
 					ballY = RACKET_Y-BALL_SIZE*2;
-					// racketX´ú±íÇòÅÄµÄË®Æ½Î»ÖÃ
+					// racketXä»£è¡¨çƒæ‹çš„æ°´å¹³ä½ç½®
 					racketX = ballX+BALL_SIZE/2-RACKET_WIDTH/2;
 					isStart=false;
 				}
 			}
-			//Èç¹ûĞ¡Çò×²µ½ÉÏ±ß¿ò
+			//å¦‚æœå°çƒæ’åˆ°ä¸Šè¾¹æ¡†
 			else if (ballY  <= 0) {
 				ySpeed = -ySpeed;
 			}
-			// Èç¹ûĞ¡ÇòÎ»ÓÚÇòÅÄÖ®ÄÚ£¬ÇÒµ½´ïÇòÅÄÎ»ÖÃ£¬Ğ¡Çò·´µ¯----------------------------------------------------start
+			// å¦‚æœå°çƒä½äºçƒæ‹ä¹‹å†…ï¼Œä¸”åˆ°è¾¾çƒæ‹ä½ç½®ï¼Œå°çƒåå¼¹----------------------------------------------------start
 			else if (ballY >= RACKET_Y - BALL_SIZE
 					&& ballX > racketX && ballX <= racketX + RACKET_WIDTH){	
 				ySpeed = -ySpeed;
 				xSpeed = (int)(-(xSpeed/Math.abs(xSpeed))*(ySpeed*(Math.abs(0.02*(racketX+(RACKET_WIDTH)/2-ballX))>1?(Math.abs(0.02*(racketX+(RACKET_WIDTH)/2-ballX))):1)));
 			}
-			// Ğ¡Çò×ø±êÔö¼Ó
+			// å°çƒåæ ‡å¢åŠ 
 			if(isStart){
 				ballY += ySpeed;
 				ballX += xSpeed;
@@ -118,7 +117,7 @@ public class PinBall
 		timer = new Timer(50, taskPerformer);
 		timer.start();
 		
-		// Ìí¼ÓÊó±êÊÂ¼ş¼àÌıÆ÷£¬°´ÏÂ×ó¼ü£¬ÓÎÏ·¿ªÊ¼
+		// æ·»åŠ é¼ æ ‡äº‹ä»¶ç›‘å¬å™¨ï¼ŒæŒ‰ä¸‹å·¦é”®ï¼Œæ¸¸æˆå¼€å§‹
 		tableArea.addMouseListener(new MouseAdapter (){
 			public void mousePressed(MouseEvent e) {
 				if(!isStart) {
@@ -126,7 +125,7 @@ public class PinBall
 				}
 			}
 		});
-		// Ìí¼ÓÊó±êÒÆ¶¯ÊÂ¼ş¼àÌıÆ÷£¬Ê¹¸ËÓëĞ¡ÇòµÄÎ»ÖÃ¸úËæÊó±ê
+		// æ·»åŠ é¼ æ ‡ç§»åŠ¨äº‹ä»¶ç›‘å¬å™¨ï¼Œä½¿æ†ä¸å°çƒçš„ä½ç½®è·Ÿéšé¼ æ ‡
 		tableArea.addMouseMotionListener(new MouseMotionAdapter() {
 			public void mouseMoved(MouseEvent e) {
 				if(!isStart) {
@@ -142,25 +141,25 @@ public class PinBall
 		new PinBall().init();
 	}
 	class MyCanvas extends Canvas{
-		// ÖØĞ´CanvasµÄpaint·½·¨£¬ÊµÏÖ»æ»­
+		// é‡å†™Canvasçš„paintæ–¹æ³•ï¼Œå®ç°ç»˜ç”»
 		public void paint(Graphics g){
-			// Èç¹ûÓÎÏ·ÒÑ¾­½áÊø
+			// å¦‚æœæ¸¸æˆå·²ç»ç»“æŸ
 			if (isLose)
 			{
 				g.setColor(new Color(255, 0, 0));
 				g.setFont(new Font("Times" , Font.BOLD, 30));
-				g.drawString("ÓÎÏ·ÒÑ½áÊø£¡" , TABLE_WIDTH/2-80 ,TABLE_HEIGHT/2);
+				g.drawString("æ¸¸æˆå·²ç»“æŸï¼" , TABLE_WIDTH/2-80 ,TABLE_HEIGHT/2);
 			}
-			// Èç¹ûÓÎÏ·»¹Î´½áÊø
+			// å¦‚æœæ¸¸æˆè¿˜æœªç»“æŸ
 			else{
-				// ÉèÖÃÑÕÉ«£¬²¢»æÖÆĞ¡Çò
+				// è®¾ç½®é¢œè‰²ï¼Œå¹¶ç»˜åˆ¶å°çƒ
 				g.setColor(new Color(230, 230, 80));
 				g.fillOval(ballX , ballY , BALL_SIZE, BALL_SIZE);
-				// ÉèÖÃÑÕÉ«£¬²¢»æÖÆÇòÅÄ
+				// è®¾ç½®é¢œè‰²ï¼Œå¹¶ç»˜åˆ¶çƒæ‹
 				g.setColor(new Color(80, 80, 200));
 				g.fillRect(racketX , RACKET_Y
 					, RACKET_WIDTH , RACKET_HEIGHT);
-				// ÉèÖÃÑÕÉ«£¬²¢»æÖÆÉúÃüÖµ
+				// è®¾ç½®é¢œè‰²ï¼Œå¹¶ç»˜åˆ¶ç”Ÿå‘½å€¼
 				g.setColor(Color.red);
 				g.setFont(LifeFont);
 				g.drawString("Life:"+lives, 20,30);
