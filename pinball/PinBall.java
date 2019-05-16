@@ -15,7 +15,7 @@ public class PinBall
 		//创建一个游戏配置对象
 		final GameConfiguration config = new GameConfiguration(1000,800);
 		//创建一个砖块map对象
-		final MapGenerator map=new MapGenerator(3,8,config);
+		final MapGenerator map=new MapGenerator();
 		//创建一个球ball对象
 		final Ball ball= new Ball(50,100,750);
 		//创建一个球拍racket对象

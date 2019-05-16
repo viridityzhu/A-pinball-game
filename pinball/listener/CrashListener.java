@@ -63,7 +63,7 @@ public class CrashListener implements ActionListener {
 			ball.setxSpeed((int)(-(ball.getxSpeed()/Math.abs(ball.getxSpeed()))*(ball.getySpeed()*(Math.abs(0.02*(racket.getRacketX()+(racket.getRACKET_WIDTH())/2-ball.getBallX()))>1?(Math.abs(0.02*(racket.getRacketX()+(racket.getRACKET_WIDTH())/2-ball.getBallX()))):1))));
 		}
 		//如果小球撞到砖块
-		for (Iterator<Brick> it = map.brickList1.iterator(); it.hasNext(); ) {
+		for (Iterator<Brick> it = map.brickList.iterator(); it.hasNext(); ) {
 		    Brick b = it.next();
 		    if( ((b.getBrickY()<=ball.getBallY()&&ball.getBallY()<=(b.getBrickY()+Brick.getBrickHeight()))&&
 					((b.getBrickX()<=ball.getBallX()&&ball.getBallX()<=(b.getBrickX()+Brick.getBrickWidth()))||
@@ -78,9 +78,9 @@ public class CrashListener implements ActionListener {
 				//若消除砖块
 				if(b.getBrickLives()==0) {
 					it.remove();
-					map.setBrickNum1(map.getBrickNum1()-1);
+					map.setBrickNum(map.getBrickNum()-1);
 					// 如果屏幕不再剩余砖块
-					if(map.getBrickNum1()==0)
+					if(map.getBrickNum()==0)
 						//如果已到最后一关
 						if(config.getLevel()==config.getTotalLevels()) {
 							timer.stop();
@@ -89,8 +89,17 @@ public class CrashListener implements ActionListener {
 							tableArea.repaint();
 						}
 						else {
+							tableArea.repaint();
 							config.setLevel(config.getLevel()+1);
-							map.nextLevel();
+							map.nextLevel(config);
+							// 重新初始化小球位置
+							// ballX和ballY代表小球的坐标
+							ball.setBallX(100);
+							ball.setBallY(racket.getRACKET_Y()-ball.getBALL_SIZE()*2); 
+							// racketX代表球拍的水平位置
+							racket.setRacketX(ball.getBallX()+ball.getBALL_SIZE()/2-racket.getRACKET_WIDTH()/2);
+							config.setStart(false);
+							break;
 						}
 				}
 			}
