@@ -35,6 +35,8 @@ public class BeginListener extends MouseAdapter {
 		if(!config.isStart()) {
 			ball.setBallX(e.getX()-ball.getBALL_SIZE()/2);
 			racket.setRacketX(e.getX()-racket.getRACKET_WIDTH()/2);
+			ball.setySpeed(-20);
+			
 		}
 	}
 }

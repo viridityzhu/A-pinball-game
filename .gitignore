@@ -1,3 +1,4 @@
 # 上传的时候自动忽略 Java class files
 *.class
 .DS_Store
+/bin/

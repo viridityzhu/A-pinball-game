@@ -9,7 +9,7 @@ public class Ball {
 	public Ball(int BALL_SIZE, int ballX, int RACKET_Y) {
 		this.BALL_SIZE = BALL_SIZE;
 		this.ballX = ballX;
-		this.ballY = RACKET_Y-BALL_SIZE*2;
+		this.ballY = RACKET_Y-BALL_SIZE;
 	}
 	
 	

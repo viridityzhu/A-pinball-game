@@ -19,7 +19,7 @@ public class GameConfiguration {
 	// 当前关卡
 	private int level=1;
 	// 游戏总关卡数
-	final private int totalLevels=6;
+	final private int totalLevels=7;
 	// 游戏是否结束的旗标
 	private boolean isLose = false;
 	// 游戏是否开始的旗标

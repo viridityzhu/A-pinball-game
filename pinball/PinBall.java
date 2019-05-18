@@ -13,19 +13,19 @@ public class PinBall
 	public static void main(String[] args){
 		//---------------创建游戏关键对象-----------------
 		//创建一个游戏配置对象
-		final GameConfiguration config = new GameConfiguration(1000,800);
-		//创建一个砖块map对象
-		final MapGenerator map=new MapGenerator();
+		final GameConfiguration config = new GameConfiguration(800,600);
+		//创建一个图片工具对象
+		ImageUtil imageUtil = new ImageUtil();
 		//创建一个球ball对象
-		final Ball ball= new Ball(50,100,750);
+		final Ball ball= new Ball(50,100,550);
+		//创建一个砖块map对象
+		final MapGenerator map=new MapGenerator(ball,imageUtil);
 		//创建一个球拍racket对象
-		final Racket racket = new Racket(30,200,750,ball.getBallX()+ball.getBALL_SIZE()/2-100);
+		final Racket racket = new Racket(30,200,550,ball.getBallX()+ball.getBALL_SIZE()/2-100);
 		//创建一个frame对象
-		Frame f = new Frame("弹球游戏");
-		//创建一个Images对象
-		ImageUtil cxy_image = new ImageUtil(ball);
+		Frame f = new Frame("褚星原喝茶");
 		//创建一个画布tableArea对象
-		TableArea tableArea = new TableArea(config,ball,racket,map,cxy_image);
+		TableArea tableArea = new TableArea(config,ball,racket,map,imageUtil);
 		//创建一个计时器timer对象
 		Timer timer;
 		
@@ -50,7 +50,7 @@ public class PinBall
 		tableArea.addKeyListener(moveListener);
 		
 		// 创建并添加小球碰撞的监听器对象
-		CrashListener crashListener = new CrashListener(ball,config,racket,tableArea,map);
+		CrashListener crashListener = new CrashListener(ball,config,racket,tableArea,map,imageUtil);
 		timer = new Timer(50, crashListener);
 		crashListener.setTimer(timer);
 		timer.start();

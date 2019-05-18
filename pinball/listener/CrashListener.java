@@ -6,13 +6,14 @@ import java.util.Iterator;
 import pinball.commons.*;
 import pinball.view.TableArea;
 public class CrashListener implements ActionListener {
-	public CrashListener(Ball ball, GameConfiguration config, Racket racket,TableArea tableArea,MapGenerator map) {
+	public CrashListener(Ball ball, GameConfiguration config, Racket racket,TableArea tableArea,MapGenerator map,ImageUtil imageUtil) {
 		super();
 		this.ball = ball;
 		this.config = config;
 		this.racket = racket;
 		this.tableArea=tableArea;
 		this.map=map;
+		this.imageUtil=imageUtil;
 	}
 	private TableArea tableArea;
 	private Ball ball;
@@ -20,17 +21,25 @@ public class CrashListener implements ActionListener {
 	private Racket racket;
 	private javax.swing.Timer timer;
 	private MapGenerator map;
+	private ImageUtil imageUtil;
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// 如果小球碰到左右边框
-		if (ball.getBallX()  <= 0 || ball.getBallX() >= config.getTABLE_WIDTH() - ball.getBALL_SIZE()){
+		if (ball.getBallX()  <= 0 ){
+			//解决卡缝的bug
+			ball.setBallX(1);
+			ball.setxSpeed(ball.getxSpeed()*(-1) );
+		}
+		else if( ball.getBallX() >= config.getTABLE_WIDTH() - ball.getBALL_SIZE()) {
+			//解决卡缝的bug
+			ball.setBallX(config.getTABLE_WIDTH() - ball.getBALL_SIZE()-1);
 			ball.setxSpeed(ball.getxSpeed()*(-1) );
 		}
 		// 如果小球高度超出了球拍位置，且横向不在球拍范围之内，生命值-1。
-		if (ball.getBallY() >= racket.getRACKET_Y() - ball.getBALL_SIZE() &&
-					(ball.getBallX() < racket.getRacketX()-ball.getBALL_SIZE() || 
+		if (ball.getBallY() > racket.getRACKET_Y() - ball.getBALL_SIZE() &&
+					(ball.getBallX() < racket.getRacketX()-ball.getBALL_SIZE()-10 || 
 					ball.getBallX() > racket.getRacketX() + 
-					racket.getRACKET_WIDTH()+ball.getBALL_SIZE()))
+					racket.getRACKET_WIDTH()+10))
 		{
 			// 玩家生命值-1
 			config.setLives(config.getLives()-1);
@@ -45,7 +54,7 @@ public class CrashListener implements ActionListener {
 				// 重新初始化小球位置
 				// ballX和ballY代表小球的坐标
 				ball.setBallX(100);
-				ball.setBallY(racket.getRACKET_Y()-ball.getBALL_SIZE()*2); 
+				ball.setBallY(racket.getRACKET_Y()-ball.getBALL_SIZE()-2); 
 				// racketX代表球拍的水平位置
 				racket.setRacketX(ball.getBallX()+ball.getBALL_SIZE()/2-racket.getRACKET_WIDTH()/2);
 				config.setStart(false);
@@ -53,12 +62,15 @@ public class CrashListener implements ActionListener {
 		}
 		//如果小球撞到上边框
 		else if (ball.getBallY()  <= 0) {
+			//解决卡缝bug
+			ball.setBallY(1);
 			ball.setySpeed(ball.getySpeed()*(-1));
 		}
-		// 如果小球位于球拍之内，且到达球拍位置，小球反弹----------------------------------------------------start
+		// 如果小球位于球拍之内，且到达球拍位置，小球反弹
 		else if (ball.getBallY() >= (racket.getRACKET_Y() - ball.getBALL_SIZE())
 				&& ball.getBallX() > racket.getRacketX() && ball.getBallX() 
 				<= racket.getRacketX() + racket.getRACKET_WIDTH()){	
+			ball.setBallY(racket.getRACKET_Y()-ball.getBALL_SIZE()-2);
 			ball.setySpeed(ball.getySpeed()*(-1));
 			ball.setxSpeed((int)(-(ball.getxSpeed()/Math.abs(ball.getxSpeed()))*(ball.getySpeed()*(Math.abs(0.02*(racket.getRacketX()+(racket.getRACKET_WIDTH())/2-ball.getBallX()))>1?(Math.abs(0.02*(racket.getRacketX()+(racket.getRACKET_WIDTH())/2-ball.getBallX()))):1))));
 		}
@@ -67,8 +79,10 @@ public class CrashListener implements ActionListener {
 		    Brick b = it.next();
 		    if( ((b.getBrickY()<=ball.getBallY()&&ball.getBallY()<=(b.getBrickY()+Brick.getBrickHeight()))&&
 					((b.getBrickX()<=ball.getBallX()&&ball.getBallX()<=(b.getBrickX()+Brick.getBrickWidth()))||
-							(b.getBrickX()<=(ball.getBallX()+ball.getBALL_SIZE())&&(ball.getBallX()+ball.getBALL_SIZE())<=(b.getBrickX()+Brick.getBrickWidth()))) ||
-					((b.getBrickY()<=(ball.getBallY()+ball.getBALL_SIZE())&&(ball.getBallY()+ball.getBALL_SIZE())<=(b.getBrickY()+Brick.getBrickHeight()))&&((b.getBrickX()<=ball.getBallX()&&ball.getBallX()<=(b.getBrickX()+Brick.getBrickWidth()))||
+							(b.getBrickX()<=(ball.getBallX()+ball.getBALL_SIZE())
+							&&(ball.getBallX()+ball.getBALL_SIZE())<=(b.getBrickX()+Brick.getBrickWidth()))) ||
+					((b.getBrickY()<=(ball.getBallY()+ball.getBALL_SIZE())&&(ball.getBallY()+ball.getBALL_SIZE())<=(b.getBrickY()+Brick.getBrickHeight()))
+							&&((b.getBrickX()<=ball.getBallX()&&ball.getBallX()<=(b.getBrickX()+Brick.getBrickWidth()))||
 							(b.getBrickX()<=(ball.getBallX()+ball.getBALL_SIZE())&&(ball.getBallX()+ball.getBALL_SIZE())<=(b.getBrickX()+Brick.getBrickWidth()))))))
 			{
 				//小球反弹
@@ -90,12 +104,11 @@ public class CrashListener implements ActionListener {
 						}
 						else {
 							tableArea.repaint();
-							config.setLevel(config.getLevel()+1);
-							map.nextLevel(config);
+							map.nextLevel(config,imageUtil,ball);
 							// 重新初始化小球位置
 							// ballX和ballY代表小球的坐标
 							ball.setBallX(100);
-							ball.setBallY(racket.getRACKET_Y()-ball.getBALL_SIZE()*2); 
+							ball.setBallY(racket.getRACKET_Y()-ball.getBALL_SIZE()-2); 
 							// racketX代表球拍的水平位置
 							racket.setRacketX(ball.getBallX()+ball.getBALL_SIZE()/2-racket.getRACKET_WIDTH()/2);
 							config.setStart(false);

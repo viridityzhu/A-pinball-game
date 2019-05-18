@@ -27,7 +27,7 @@ public class TableArea extends Canvas implements ImageObserver{
 		this.ball = ball;
 		this.racket = racket;
 		this.map=map;
-		this.images = images;
+		this.imageUtil = images;
 	}
 	
 	
@@ -35,41 +35,41 @@ public class TableArea extends Canvas implements ImageObserver{
 	private Ball ball;
 	private Racket racket;
 	private MapGenerator map;
-	public ImageUtil images;
+	public ImageUtil imageUtil;
 	
 	
 	// 重写Canvas的paint方法，实现绘画
 	public void paint(Graphics g){
+		// 背景图片
+		g.drawImage(imageUtil.getBg_image(),0,0,config.getTABLE_WIDTH(),config.getTABLE_HEIGHT(),this);
+		
 		// 生命值显示的字体（之后可以用红心图片代替）
 		Font LifeFont= new Font("TimesRoman",Font.BOLD,30);
 		// 如果游戏已经结束
 		if (config.isLose())
 		{
-			g.setColor(new Color(255, 0, 0));
-			g.setFont(new Font("Times" , Font.BOLD, 30));
-			g.drawString("游戏已结束！" , config.getTABLE_WIDTH()/2-80 ,config.getTABLE_HEIGHT()/2);
+			g.drawImage(imageUtil.getLose_image(),0,0,config.getTABLE_WIDTH(),config.getTABLE_HEIGHT(),this);
 		}
 		// 如果游戏通关
 		else if(config.isWin()) {
-			g.setColor(new Color(255, 0, 0));
-			g.setFont(new Font("Times" , Font.BOLD, 30));
-			g.drawString("You Win!!!!！" , config.getTABLE_WIDTH()/2-80 ,config.getTABLE_HEIGHT()/2);
+			g.drawImage(imageUtil.getWin_image(),0,0,config.getTABLE_WIDTH(),config.getTABLE_HEIGHT(),this);
 		}
 		// 如果游戏还未结束
 		else{
-			// 设置颜色，并绘制小球
-			g.drawImage(images.cxy_image,ball.getBallX(),ball.getBallY(),images.cxy_image.getWidth(),images.cxy_image.getHeight(),this);
+			// 绘制小球
+			g.drawImage(imageUtil.getBall_image(),ball.getBallX(),ball.getBallY(),imageUtil.getBall_image().getWidth(),imageUtil.getBall_image().getHeight(),this);
 			
 			// 设置颜色，并绘制球拍
 			g.setColor(new Color(80, 80, 200));
 			g.fillRect(racket.getRacketX() , racket.getRACKET_Y()
 				, racket.getRACKET_WIDTH() , racket.getRACKET_HEIGHT());
 			//绘制砖块
-			map.drawMap((Graphics2D)g);
+			map.drawMap(this,(Graphics2D)g,imageUtil);
 			// 设置颜色，并绘制生命值
-			g.setColor(Color.red);
+			g.setColor(Color.LIGHT_GRAY);
 			g.setFont(LifeFont);
 			g.drawString("Life:"+config.getLives(), 20,30);
+			g.drawString("Level:"+config.getLevel(), 20, 60);
 			
 		}
 	}
