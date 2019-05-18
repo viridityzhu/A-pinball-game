@@ -4,9 +4,7 @@ Java课程小组作业，一个以褚星原喝茶为主题的弹球小游戏。
 
 ## 效果图！
 
-![p1](pinball_have_a_see/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-05-19%20%E4%B8%8A%E5%8D%883.40.48.png) 
-
-![p1](https://github.com/viridityzhu/cxy-drinking-tea/raw/master/pinball_have_a_see/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-05-19%20%E4%B8%8A%E5%8D%883.40.48.png) 
+![p1](https://i.loli.net/2019/05/19/5ce068b06a92575136.png)
 
 ## 1. 构思
 
